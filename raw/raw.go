@@ -3,105 +3,102 @@ package raw
 import (
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/hindsights/gslog"
 )
 
-type LogLevel int
-
-const (
-	LogLevelAll LogLevel = iota
-	LogLevelTrace
-	LogLevelDebug
-	LogLevelInfo
-	LogLevelWarn
-	LogLevelError
-	LogLevelDisable
-)
-
-var logLevelStrings []string
-
 func init() {
-	logLevelStrings = []string{
-		"ALL",
-		"TRACE",
-		"DEBUG",
-		"INFO",
-		"WARN",
-		"ERROR",
+	gslog.SetBackend(NewRawBackend(gslog.LogLevelDebug))
+}
+
+type rawBackend struct {
+	logLevel gslog.LogLevel
+}
+
+func (backend *rawBackend) GetLogger(name string) gslog.Logger {
+	return rawLogger{backend: backend, name: name}
+}
+
+func NewRawBackend(logLevel gslog.LogLevel) gslog.Backend {
+	return &rawBackend{logLevel: logLevel}
+}
+
+type rawLogger struct {
+	backend *rawBackend
+	name    string
+}
+
+// func (logger rawLogger) Name() string {
+// 	return logger.name
+// }
+
+func (logger rawLogger) NeedLog(level gslog.LogLevel) bool {
+	return level >= logger.backend.logLevel
+}
+
+func (logger rawLogger) Logf(level gslog.LogLevel, format string, args ...interface{}) {
+	if !logger.NeedLog(level) {
+		return
 	}
-
-	gslog.SetBackend(dummyBackend{})
+	logger.Log(level, fmt.Sprintf(format, args...))
 }
 
-type dummyBackend struct {
-}
-
-func (backend dummyBackend) GetLogger(name string) gslog.Logger {
-	return dummyLogger{name: name}
-}
-
-func getLogLevel(level LogLevel) string {
-	if level > LogLevelAll && level < LogLevelDisable {
-		return logLevelStrings[level]
+func (logger rawLogger) Log(level gslog.LogLevel, args ...interface{}) {
+	if !logger.NeedLog(level) {
+		return
 	}
-	return strconv.FormatInt(int64(level), 10)
-}
-
-func dummyLog(name string, level LogLevel, args ...interface{}) {
-	vars := append([]interface{}{"[" + name + "]", getLogLevel(level)}, args...)
+	vars := append([]interface{}{fmt.Sprintf("[%5s] [%8s]", level.String(), logger.name)}, args...)
 	log.Println(vars...)
 }
 
-func dummyLogF(name string, level LogLevel, format string, args ...interface{}) {
-	dummyLog(name, level, fmt.Sprintf(format, args...))
+func (logger rawLogger) Trace(args ...interface{}) {
+	logger.Log(gslog.LogLevelTrace, args...)
 }
 
-type dummyLogger struct {
-	name string
+func (logger rawLogger) Debug(args ...interface{}) {
+	logger.Log(gslog.LogLevelDebug, args...)
 }
 
-func (logger dummyLogger) Tracef(format string, args ...interface{}) {
-	dummyLogF(logger.name, LogLevelTrace, format, args...)
+func (logger rawLogger) Info(args ...interface{}) {
+	logger.Log(gslog.LogLevelInfo, args...)
 }
 
-func (logger dummyLogger) Debugf(format string, args ...interface{}) {
-
+func (logger rawLogger) Warn(args ...interface{}) {
+	logger.Log(gslog.LogLevelWarn, args...)
 }
 
-func (logger dummyLogger) Infof(format string, args ...interface{}) {
-
+func (logger rawLogger) Error(args ...interface{}) {
+	logger.Log(gslog.LogLevelError, args...)
 }
 
-func (logger dummyLogger) Warnf(format string, args ...interface{}) {
-
+func (logger rawLogger) Fatal(args ...interface{}) {
+	logger.Log(gslog.LogLevelFatal, args...)
 }
 
-func (logger dummyLogger) Errorf(format string, args ...interface{}) {
-
+func (logger rawLogger) Tracef(format string, args ...interface{}) {
+	logger.Logf(gslog.LogLevelTrace, format, args...)
 }
 
-func (logger dummyLogger) Trace(args ...interface{}) {
-	dummyLog(logger.name, LogLevelTrace, args...)
+func (logger rawLogger) Debugf(format string, args ...interface{}) {
+	logger.Logf(gslog.LogLevelDebug, format, args...)
 }
 
-func (logger dummyLogger) Debug(args ...interface{}) {
-
+func (logger rawLogger) Infof(format string, args ...interface{}) {
+	logger.Logf(gslog.LogLevelInfo, format, args...)
 }
 
-func (logger dummyLogger) Info(args ...interface{}) {
-
+func (logger rawLogger) Warnf(format string, args ...interface{}) {
+	logger.Logf(gslog.LogLevelWarn, format, args...)
 }
 
-func (logger dummyLogger) Print(args ...interface{}) {
-
+func (logger rawLogger) Errorf(format string, args ...interface{}) {
+	logger.Logf(gslog.LogLevelError, format, args...)
 }
 
-func (logger dummyLogger) Warn(args ...interface{}) {
-
+func (logger rawLogger) Fatalf(format string, args ...interface{}) {
+	logger.Logf(gslog.LogLevelFatal, format, args...)
 }
 
-func (logger dummyLogger) Error(args ...interface{}) {
-
+func (logger rawLogger) WithFields(fields gslog.Fields) gslog.Logger {
+	return gslog.NewFieldsLogger(logger, fields)
 }
