@@ -1,25 +1,23 @@
-package raw
+package gslog
 
 import (
 	"fmt"
 	"log"
-
-	"github.com/hindsights/gslog"
 )
 
 func init() {
-	gslog.SetBackend(NewRawBackend(gslog.LogLevelDebug))
+	SetBackend(NewRawBackend(LogLevelDebug))
 }
 
 type rawBackend struct {
-	logLevel gslog.LogLevel
+	logLevel LogLevel
 }
 
-func (backend *rawBackend) GetLogger(name string) gslog.Logger {
+func (backend *rawBackend) GetLogger(name string) Logger {
 	return rawLogger{backend: backend, name: name}
 }
 
-func NewRawBackend(logLevel gslog.LogLevel) gslog.Backend {
+func NewRawBackend(logLevel LogLevel) Backend {
 	return &rawBackend{logLevel: logLevel}
 }
 
@@ -32,18 +30,18 @@ type rawLogger struct {
 // 	return logger.name
 // }
 
-func (logger rawLogger) NeedLog(level gslog.LogLevel) bool {
+func (logger rawLogger) NeedLog(level LogLevel) bool {
 	return level >= logger.backend.logLevel
 }
 
-func (logger rawLogger) Logf(level gslog.LogLevel, format string, args ...interface{}) {
+func (logger rawLogger) Logf(level LogLevel, format string, args ...interface{}) {
 	if !logger.NeedLog(level) {
 		return
 	}
 	logger.Log(level, fmt.Sprintf(format, args...))
 }
 
-func (logger rawLogger) Log(level gslog.LogLevel, args ...interface{}) {
+func (logger rawLogger) Log(level LogLevel, args ...interface{}) {
 	if !logger.NeedLog(level) {
 		return
 	}
@@ -52,53 +50,53 @@ func (logger rawLogger) Log(level gslog.LogLevel, args ...interface{}) {
 }
 
 func (logger rawLogger) Trace(args ...interface{}) {
-	logger.Log(gslog.LogLevelTrace, args...)
+	logger.Log(LogLevelTrace, args...)
 }
 
 func (logger rawLogger) Debug(args ...interface{}) {
-	logger.Log(gslog.LogLevelDebug, args...)
+	logger.Log(LogLevelDebug, args...)
 }
 
 func (logger rawLogger) Info(args ...interface{}) {
-	logger.Log(gslog.LogLevelInfo, args...)
+	logger.Log(LogLevelInfo, args...)
 }
 
 func (logger rawLogger) Warn(args ...interface{}) {
-	logger.Log(gslog.LogLevelWarn, args...)
+	logger.Log(LogLevelWarn, args...)
 }
 
 func (logger rawLogger) Error(args ...interface{}) {
-	logger.Log(gslog.LogLevelError, args...)
+	logger.Log(LogLevelError, args...)
 }
 
 func (logger rawLogger) Fatal(args ...interface{}) {
-	logger.Log(gslog.LogLevelFatal, args...)
+	logger.Log(LogLevelFatal, args...)
 }
 
 func (logger rawLogger) Tracef(format string, args ...interface{}) {
-	logger.Logf(gslog.LogLevelTrace, format, args...)
+	logger.Logf(LogLevelTrace, format, args...)
 }
 
 func (logger rawLogger) Debugf(format string, args ...interface{}) {
-	logger.Logf(gslog.LogLevelDebug, format, args...)
+	logger.Logf(LogLevelDebug, format, args...)
 }
 
 func (logger rawLogger) Infof(format string, args ...interface{}) {
-	logger.Logf(gslog.LogLevelInfo, format, args...)
+	logger.Logf(LogLevelInfo, format, args...)
 }
 
 func (logger rawLogger) Warnf(format string, args ...interface{}) {
-	logger.Logf(gslog.LogLevelWarn, format, args...)
+	logger.Logf(LogLevelWarn, format, args...)
 }
 
 func (logger rawLogger) Errorf(format string, args ...interface{}) {
-	logger.Logf(gslog.LogLevelError, format, args...)
+	logger.Logf(LogLevelError, format, args...)
 }
 
 func (logger rawLogger) Fatalf(format string, args ...interface{}) {
-	logger.Logf(gslog.LogLevelFatal, format, args...)
+	logger.Logf(LogLevelFatal, format, args...)
 }
 
-func (logger rawLogger) WithFields(fields gslog.Fields) gslog.Logger {
-	return gslog.NewFieldsLogger(logger, fields)
+func (logger rawLogger) WithFields(fields Fields) Logger {
+	return NewFieldsLogger(logger, fields)
 }
