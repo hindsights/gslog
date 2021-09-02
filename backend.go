@@ -5,6 +5,11 @@ var defaultLogger Logger
 
 type Backend interface {
 	GetLogger(name string) Logger
+	GetFieldLogger(name string) FieldLogger
+}
+
+func GetFieldLogger(name string) FieldLogger {
+	return theBackend.GetFieldLogger(name)
 }
 
 func GetLogger(name string) Logger {
@@ -22,10 +27,6 @@ func Logf(level LogLevel, format string, args ...interface{}) {
 
 func Log(level LogLevel, args ...interface{}) {
 	defaultLogger.Log(level, args...)
-}
-
-func Trace(args ...interface{}) {
-	defaultLogger.Log(LogLevelTrace, args...)
 }
 
 func Debug(args ...interface{}) {
@@ -46,10 +47,6 @@ func Error(args ...interface{}) {
 
 func Fatal(args ...interface{}) {
 	defaultLogger.Log(LogLevelFatal, args...)
-}
-
-func Tracef(format string, args ...interface{}) {
-	defaultLogger.Logf(LogLevelTrace, format, args...)
 }
 
 func Debugf(format string, args ...interface{}) {

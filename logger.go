@@ -1,20 +1,15 @@
 package gslog
 
-type Fields map[string]interface{}
-
-type BaseLogger interface {
-	NeedLog(level LogLevel) bool
-	Logf(level LogLevel, format string, args ...interface{})
+type Logger interface {
 	Log(level LogLevel, args ...interface{})
+	Logf(level LogLevel, format string, args ...interface{})
 
-	Trace(args ...interface{})
 	Debug(args ...interface{})
 	Info(args ...interface{})
 	Warn(args ...interface{})
 	Error(args ...interface{})
 	Fatal(args ...interface{})
 
-	Tracef(format string, args ...interface{})
 	Debugf(format string, args ...interface{})
 	Infof(format string, args ...interface{})
 	Warnf(format string, args ...interface{})
@@ -22,11 +17,13 @@ type BaseLogger interface {
 	Fatalf(format string, args ...interface{})
 }
 
-type Logger interface {
-	BaseLogger
-	WithFields(fields Fields) Logger
-}
+type FieldLogger interface {
+	Log(level LogLevel, msg string, fields ...Fields)
+	Debug(msg string, fields ...Fields)
+	Info(msg string, fields ...Fields)
+	Warn(msg string, fields ...Fields)
+	Error(msg string, fields ...Fields)
+	Fatal(msg string, fields ...Fields)
 
-// func WithFields(logger Logger, fields Fields) Logger {
-// 	return logger.WithFields(fields)
-// }
+	WithFields(fields Fields) FieldLogger
+}

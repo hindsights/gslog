@@ -1,10 +1,10 @@
 # gslog
 
-A simple log interface library for golang, like slf4j.
+A structured log interface library for golang, like slf4j.
 
 ## gslog.Logger
 
-Simple logger interface.
+Structured logger interface.
 
 ## gslog.Backend
 
@@ -39,12 +39,15 @@ func main() {
 	fmt.Println("test")
 	gslog.Info("start")
 	logger := gslog.GetLogger("app")
-	logger.Debug("debug", 1)
-	logger.Info("info", "abc")
-	logger.Warn("warn", true)
-	logger.Error("error", false)
-	logger.WithFields(gslog.Fields{"key1": 1, "key2": "val2"}).Error("field output")
-	logger.WithFields(gslog.Fields{"key1": 1, "key2": "val2"}).Errorf("field output %d", 567)
+	flogger := gslog.GetFieldLogger("app")
+	logger.Debug("debug", gslog.Fields{"key1": 1, "key2": "val2"})
+	logger.Info("info", gslog.Fields{"int": 1, "str": "val2"})
+	logger.Warn("warn")
+	logger.Error("error", gslog.Fields{"key1": 1, "key2": "val2"})
+	flogger.Error("field output")
+	flogger.Info("field output", gslog.Fields{"val": 567})
+	flogger.WithFields(gslog.Fields{"key1": 1, "key2": "val2"}).Error("field output")
+	flogger.WithFields(gslog.Fields{"key1": 1, "key2": "val2"}).Info("field output", gslog.Fields{"val": 567})
 	gslog.Debugf("debugf %s", "name")
 	gslog.Infof("infof %s", "value")
 	gslog.Warnf("warnf %d", 20)
@@ -52,13 +55,16 @@ func main() {
 
 	logrusLogger := logrus.New()
 	logrusLogger.SetFormatter(&logrus.TextFormatter{
-		DisableColors: true,
-		FullTimestamp: true,
-		// DisableQuote:   true,
+		DisableColors:  true,
+		FullTimestamp:  true,
 		DisableSorting: true,
 	})
-	gslog.SetBackend(gslogrus.NewBackend(logrusLogger, gslog.LogLevelAll))
+	gslog.SetBackend(gslogrus.NewBackend(logrusLogger))
 	gslog.Info("gs-logrus-hello")
+	logger = gslog.GetLogger("logrus")
+	flogger = gslog.GetFieldLogger("logrus")
+	logger.Info("output to zap", 123)
+	flogger.Info("output to zap", gslog.Fields{"value": 123})
 
 	consoleWriter := zapcore.Lock(os.Stdout)
 	encoderConfig := zap.NewProductionEncoderConfig()
@@ -68,10 +74,12 @@ func main() {
 	core := zapcore.NewCore(consoleEncoder, consoleWriter, logLevelChecker{level: zapcore.DebugLevel})
 	tempLogger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 	tempLogger = tempLogger.WithOptions(zap.AddCallerSkip(1))
-	gslog.SetBackend(gszap.NewBackend(gslog.LogLevelAll, tempLogger))
+	gslog.SetBackend(gszap.NewBackend(tempLogger))
 	gslog.Info("gs-zap-hello")
 	gslog.Warn("zap-start")
-	logger.Info("output to zap")
+	logger = gslog.GetLogger("zap")
+	flogger = gslog.GetFieldLogger("zap")
+	logger.Info("output to zap", 123)
+	flogger.Info("output to zap", gslog.Fields{"value": 123})
 }
-
 ```

@@ -7,7 +7,6 @@ var logLevelStrings []string
 func init() {
 	logLevelStrings = []string{
 		"ALL",
-		"TRACE",
 		"DEBUG",
 		"INFO",
 		"WARN",
@@ -20,7 +19,6 @@ type LogLevel int
 
 const (
 	LogLevelAll LogLevel = iota
-	LogLevelTrace
 	LogLevelDebug
 	LogLevelInfo
 	LogLevelWarn
