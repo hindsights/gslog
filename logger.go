@@ -1,6 +1,7 @@
 package gslog
 
 type Logger interface {
+	NeedLog(level LogLevel) bool
 	Log(level LogLevel, args ...interface{})
 	Logf(level LogLevel, format string, args ...interface{})
 
@@ -18,6 +19,7 @@ type Logger interface {
 }
 
 type FieldLogger interface {
+	NeedLog(level LogLevel) bool
 	Log(level LogLevel, msg string, fields ...Fields)
 	Debug(msg string, fields ...Fields)
 	Info(msg string, fields ...Fields)

@@ -18,64 +18,11 @@ func (backend *rawBackend) GetLogger(name string) Logger {
 }
 
 func (backend *rawBackend) GetFieldLogger(name string) FieldLogger {
-	return rawSLogger{backend: backend, name: name}
+	return NewFieldLogger(backend.GetLogger(name))
 }
 
 func NewRawBackend(logLevel LogLevel) Backend {
 	return &rawBackend{logLevel: logLevel}
-}
-
-type rawSLogger struct {
-	backend *rawBackend
-	name    string
-	fields  Fields
-}
-
-func (logger rawSLogger) NeedLog(level LogLevel) bool {
-	return level >= logger.backend.logLevel
-}
-
-func (logger rawSLogger) WithFields(fields Fields) FieldLogger {
-	return rawSLogger{backend: logger.backend, name: logger.name, fields: JoinFields(logger.fields, fields)}
-}
-
-func (logger rawSLogger) Log(level LogLevel, msg string, fields ...Fields) {
-	if !logger.NeedLog(level) {
-		return
-	}
-	fieldCount := 0
-	if len(fields) > 0 {
-		fieldCount += len(fields[0])
-	}
-	fieldArgs := FormatFields(append([]Fields{logger.fields}, fields...)...)
-	vars := make([]interface{}, 3+len(fieldArgs))
-	vars[0] = fmt.Sprintf("[%5s]", level.String())
-	vars[1] = fmt.Sprintf("[%8s]", logger.name)
-	vars[2] = msg
-	for i, arg := range fieldArgs {
-		vars[i+3] = arg
-	}
-	log.Println(vars...)
-}
-
-func (logger rawSLogger) Debug(msg string, fields ...Fields) {
-	logger.Log(LogLevelDebug, msg, fields...)
-}
-
-func (logger rawSLogger) Info(msg string, fields ...Fields) {
-	logger.Log(LogLevelInfo, msg, fields...)
-}
-
-func (logger rawSLogger) Warn(msg string, fields ...Fields) {
-	logger.Log(LogLevelWarn, msg, fields...)
-}
-
-func (logger rawSLogger) Error(msg string, fields ...Fields) {
-	logger.Log(LogLevelError, msg, fields...)
-}
-
-func (logger rawSLogger) Fatal(msg string, fields ...Fields) {
-	logger.Log(LogLevelFatal, msg, fields...)
 }
 
 type rawLogger struct {
