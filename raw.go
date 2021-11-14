@@ -14,10 +14,10 @@ type rawBackend struct {
 }
 
 func (backend *rawBackend) GetLogger(name string) Logger {
-	return NewFieldLogger(backend.GetSimpleLogger(name))
+	return NewFieldLogger(backend.GetSugaredLogger(name))
 }
 
-func (backend *rawBackend) GetSimpleLogger(name string) SimpleLogger {
+func (backend *rawBackend) GetSugaredLogger(name string) SugaredLogger {
 	return rawLogger{backend: backend, name: name}
 }
 

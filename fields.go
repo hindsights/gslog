@@ -49,11 +49,11 @@ func GetFieldCount(fields ...Fields) int {
 }
 
 type rawFieldLogger struct {
-	logger SimpleLogger
+	logger SugaredLogger
 	fields Fields
 }
 
-func NewFieldLogger(logger SimpleLogger) Logger {
+func NewFieldLogger(logger SugaredLogger) Logger {
 	return rawFieldLogger{logger: logger}
 }
 

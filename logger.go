@@ -2,7 +2,7 @@ package gslog
 
 import "time"
 
-type SimpleLogger interface {
+type SugaredLogger interface {
 	NeedLog(level LogLevel) bool
 	Log(level LogLevel, args ...interface{})
 	Logf(level LogLevel, format string, args ...interface{})

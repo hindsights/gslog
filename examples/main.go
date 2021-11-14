@@ -12,7 +12,7 @@ func main() {
 	gslog.Info("start")
 	gslog.Info("start ok", gslog.Fields{"name": 123, "str": "string literal"})
 	args := []interface{}{123, "abc", true}
-	logger := gslog.GetSimpleLogger("app")
+	logger := gslog.GetSugaredLogger("app")
 	logger.Debug("debug", 1, args)
 	logger.Info("info", "abc")
 	logger.Warn("warn", true)
