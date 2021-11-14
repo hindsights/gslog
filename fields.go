@@ -2,6 +2,7 @@ package gslog
 
 import (
 	"fmt"
+	"time"
 )
 
 type Fields map[string]interface{}
@@ -47,52 +48,125 @@ func GetFieldCount(fields ...Fields) int {
 	return count
 }
 
-type rawSLogger struct {
-	logger Logger
+type rawFieldLogger struct {
+	logger SimpleLogger
 	fields Fields
 }
 
-func NewFieldLogger(logger Logger) FieldLogger {
-	return rawSLogger{logger: logger}
+func NewFieldLogger(logger SimpleLogger) Logger {
+	return rawFieldLogger{logger: logger}
 }
 
-func (logger rawSLogger) NeedLog(level LogLevel) bool {
+func (logger rawFieldLogger) NeedLog(level LogLevel) bool {
 	return logger.logger.NeedLog(level)
 }
 
-func (logger rawSLogger) WithFields(fields Fields) FieldLogger {
-	return rawSLogger{logger: logger.logger, fields: JoinFields(logger.fields, fields)}
-}
-
-func (logger rawSLogger) Log(level LogLevel, msg string, fields ...Fields) {
+func (logger rawFieldLogger) Log(level LogLevel, msg string) {
 	if !logger.NeedLog(level) {
 		return
 	}
-	fieldArgs := FormatFields(append([]Fields{logger.fields}, fields...)...)
-	args := make([]interface{}, 1+len(fieldArgs))
+	fieldArgs := FormatFields(logger.fields)
+	args := make([]interface{}, 2+len(fieldArgs))
 	args[0] = msg
+	args[1] = "\t"
 	for i, arg := range fieldArgs {
-		args[i+1] = arg
+		args[i+2] = arg
 	}
 	logger.logger.Log(level, args...)
 }
 
-func (logger rawSLogger) Debug(msg string, fields ...Fields) {
-	logger.Log(LogLevelDebug, msg, fields...)
+func (logger rawFieldLogger) Debug(msg string) {
+	logger.Log(LogLevelDebug, msg)
 }
 
-func (logger rawSLogger) Info(msg string, fields ...Fields) {
-	logger.Log(LogLevelInfo, msg, fields...)
+func (logger rawFieldLogger) Info(msg string) {
+	logger.Log(LogLevelInfo, msg)
 }
 
-func (logger rawSLogger) Warn(msg string, fields ...Fields) {
-	logger.Log(LogLevelWarn, msg, fields...)
+func (logger rawFieldLogger) Warn(msg string) {
+	logger.Log(LogLevelWarn, msg)
 }
 
-func (logger rawSLogger) Error(msg string, fields ...Fields) {
-	logger.Log(LogLevelError, msg, fields...)
+func (logger rawFieldLogger) Error(msg string) {
+	logger.Log(LogLevelError, msg)
 }
 
-func (logger rawSLogger) Fatal(msg string, fields ...Fields) {
-	logger.Log(LogLevelFatal, msg, fields...)
+func (logger rawFieldLogger) Fatal(msg string) {
+	logger.Log(LogLevelFatal, msg)
+}
+
+func (logger rawFieldLogger) Fields(fields Fields) Logger {
+	return rawFieldLogger{logger: logger.logger, fields: JoinFields(logger.fields, fields)}
+}
+
+func (logger rawFieldLogger) Field(key string, val interface{}) Logger {
+	return rawFieldLogger{logger: logger.logger, fields: JoinFields(logger.fields, Fields{key: val})}
+}
+
+func (logger rawFieldLogger) Str(key string, val string) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Int(key string, val int) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Uint(key string, val uint) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Bool(key string, val bool) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Int64(key string, val int64) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Int32(key string, val int32) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Int16(key string, val int16) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Int8(key string, val int8) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Uint64(key string, val uint64) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Uint32(key string, val uint32) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Uint16(key string, val uint16) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Uint8(key string, val uint8) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Float32(key string, val float32) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Float64(key string, val float64) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Err(key string, val error) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Time(key string, val time.Time) Logger {
+	return logger.Field(key, val)
+}
+
+func (logger rawFieldLogger) Duration(key string, val time.Duration) Logger {
+	return logger.Field(key, val)
 }

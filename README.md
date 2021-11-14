@@ -1,6 +1,6 @@
 # gslog
 
-A structured log interface library for golang, like slf4j.
+A structured log interface library for golang.
 
 ## gslog.Logger
 
@@ -38,16 +38,16 @@ func (checker logLevelChecker) Enabled(l zapcore.Level) bool {
 func main() {
 	fmt.Println("test")
 	gslog.Info("start")
-	logger := gslog.GetLogger("app")
-	flogger := gslog.GetFieldLogger("app")
-	logger.Debug("debug", gslog.Fields{"key1": 1, "key2": "val2"})
-	logger.Info("info", gslog.Fields{"int": 1, "str": "val2"})
+	logger := gslog.GetSimpleLogger("app")
+	flogger := gslog.GetLogger("app")
+	logger.Debug("debug", "key1", 1, "key2", "val2")
+	logger.Info("info", "int", 1, "str", "val2")
 	logger.Warn("warn")
-	logger.Error("error", gslog.Fields{"key1": 1, "key2": "val2"})
+	logger.Error("error", "key1", 1, "key2", "val2")
 	flogger.Error("field output")
-	flogger.Info("field output", gslog.Fields{"val": 567})
-	flogger.WithFields(gslog.Fields{"key1": 1, "key2": "val2"}).Error("field output")
-	flogger.WithFields(gslog.Fields{"key1": 1, "key2": "val2"}).Info("field output", gslog.Fields{"val": 567})
+	flogger.Int("val", 567).Info("field output")
+	flogger.Int("key1", 1).Str("key2", "val2").Error("field output")
+	flogger.Int("key1", 1).Str("key2", "val2").Int("val", 567).Info("field output")
 	gslog.Debugf("debugf %s", "name")
 	gslog.Infof("infof %s", "value")
 	gslog.Warnf("warnf %d", 20)
@@ -61,10 +61,10 @@ func main() {
 	})
 	gslog.SetBackend(gslogrus.NewBackend(logrusLogger))
 	gslog.Info("gs-logrus-hello")
-	logger = gslog.GetLogger("logrus")
-	flogger = gslog.GetFieldLogger("logrus")
-	logger.Info("output to zap", 123)
-	flogger.Info("output to zap", gslog.Fields{"value": 123})
+	logger = gslog.GetSimpleLogger("logrus")
+	flogger = gslog.GetLogger("logrus")
+	logger.Info("output to logrus", 123)
+	flogger.Int("val", 123).Info("output to logrus")
 
 	consoleWriter := zapcore.Lock(os.Stdout)
 	encoderConfig := zap.NewProductionEncoderConfig()
@@ -77,9 +77,9 @@ func main() {
 	gslog.SetBackend(gszap.NewBackend(tempLogger))
 	gslog.Info("gs-zap-hello")
 	gslog.Warn("zap-start")
-	logger = gslog.GetLogger("zap")
-	flogger = gslog.GetFieldLogger("zap")
+	logger = gslog.GetSimpleLogger("zap")
+	flogger = gslog.GetLogger("zap")
 	logger.Info("output to zap", 123)
-	flogger.Info("output to zap", gslog.Fields{"value": 123})
+	flogger.Int("val", 123).Info("output to zap")
 }
 ```

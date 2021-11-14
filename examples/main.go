@@ -12,7 +12,7 @@ func main() {
 	gslog.Info("start")
 	gslog.Info("start ok", gslog.Fields{"name": 123, "str": "string literal"})
 	args := []interface{}{123, "abc", true}
-	logger := gslog.GetLogger("app")
+	logger := gslog.GetSimpleLogger("app")
 	logger.Debug("debug", 1, args)
 	logger.Info("info", "abc")
 	logger.Warn("warn", true)
@@ -22,12 +22,12 @@ func main() {
 	logger.Warnf("warnf %d", 20)
 	logger.Errorf("errorf %v", 100)
 
-	slogger := gslog.GetFieldLogger("test")
-	slogger.Debug("debug output", gslog.Fields{"integer": 123})
-	slogger.Info("info output", gslog.Fields{"string": "value"})
-	slogger.Warn("warn output", gslog.Fields{"bool": true})
-	slogger.Error("error output", gslog.Fields{"error": io.EOF})
+	slogger := gslog.GetLogger("test")
+	slogger.Int("integer", 123).Debug("debug output")
+	slogger.Str("string", "value").Info("info output")
+	slogger.Bool("bool", true).Warn("warn output")
+	slogger.Err("error", io.EOF).Error("error output")
 
-	flogger := slogger.WithFields(gslog.Fields{"ip": "1.2.3.4", "port": "880"})
-	flogger.Info("detect start", gslog.Fields{"time": 1, "date": "2020-12-30"})
+	flogger := slogger.Fields(gslog.Fields{"ip": "1.2.3.4", "port": "880"})
+	flogger.Int("time", 1).Str("date", "2020-12-30").Info("detect start")
 }

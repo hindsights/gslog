@@ -1,24 +1,24 @@
 package gslog
 
 var theBackend Backend
-var defaultLogger Logger
+var defaultLogger SimpleLogger
 
 type Backend interface {
 	GetLogger(name string) Logger
-	GetFieldLogger(name string) FieldLogger
-}
-
-func GetFieldLogger(name string) FieldLogger {
-	return theBackend.GetFieldLogger(name)
+	GetSimpleLogger(name string) SimpleLogger
 }
 
 func GetLogger(name string) Logger {
 	return theBackend.GetLogger(name)
 }
 
+func GetSimpleLogger(name string) SimpleLogger {
+	return theBackend.GetSimpleLogger(name)
+}
+
 func SetBackend(backend Backend) {
 	theBackend = backend
-	defaultLogger = backend.GetLogger("log")
+	defaultLogger = backend.GetSimpleLogger("log")
 }
 
 func Logf(level LogLevel, format string, args ...interface{}) {

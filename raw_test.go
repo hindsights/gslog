@@ -5,13 +5,13 @@ import (
 )
 
 func TestLog(t *testing.T) {
-	logger := GetFieldLogger("test")
-	logger.Debug("hello2", Fields{"x": 123})
-	logger.Debug("world", Fields{"y": 123})
+	logger := GetLogger("test")
+	logger.Int("x", 123).Debug("hello2")
+	logger.Int("y", 123).Debug("world")
 	logger.Info("earth")
 	logger.Warn("sun")
 	logger.Error("moon")
-	logger.Info("log with fields", Fields{"key1": "value1", "key2": 234})
+	logger.Str("key1", "val1").Int("key2", 234).Info("log with fields")
 	Warn("warn", "str", 123)
 	Debug("debug", "str", 234)
 	Error("error", "str", 345)
