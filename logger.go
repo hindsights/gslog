@@ -1,10 +1,19 @@
 package gslog
 
-import "time"
+import (
+	"time"
+)
+
+type Attr struct {
+	Key   string
+	Value interface{}
+}
 
 type SugaredLogger interface {
 	NeedLog(level LogLevel) bool
+	LogDirect(level LogLevel, args ...interface{})
 	Log(level LogLevel, args ...interface{})
+	LogfDirect(level LogLevel, format string, args ...interface{})
 	Logf(level LogLevel, format string, args ...interface{})
 
 	Debug(args ...interface{})
@@ -22,16 +31,18 @@ type SugaredLogger interface {
 
 type Logger interface {
 	NeedLog(level LogLevel) bool
-	Log(level LogLevel, msg string)
+	LogDirect(level LogLevel, msg string, args ...interface{})
+	Log(level LogLevel, msg string, args ...interface{})
 
-	Debug(msg string)
-	Info(msg string)
-	Warn(msg string)
-	Error(msg string)
-	Fatal(msg string)
+	Debug(msg string, args ...interface{})
+	Info(msg string, args ...interface{})
+	Warn(msg string, args ...interface{})
+	Error(msg string, args ...interface{})
+	Fatal(msg string, args ...interface{})
 
 	Fields(fields Fields) Logger
 	Field(key string, val interface{}) Logger
+	WithAttrs(attrs ...Attr) Logger
 
 	Str(key string, val string) Logger
 	Int(key string, val int) Logger

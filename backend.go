@@ -1,7 +1,8 @@
 package gslog
 
 var theBackend Backend
-var defaultLogger SugaredLogger
+var defaultLogger Logger
+var defaultSugaredLogger SugaredLogger
 
 type Backend interface {
 	GetLogger(name string) Logger
@@ -18,53 +19,54 @@ func GetSugaredLogger(name string) SugaredLogger {
 
 func SetBackend(backend Backend) {
 	theBackend = backend
-	defaultLogger = backend.GetSugaredLogger("log")
+	defaultLogger = backend.GetLogger("log")
+	defaultSugaredLogger = backend.GetSugaredLogger("log")
 }
 
 func Logf(level LogLevel, format string, args ...interface{}) {
-	defaultLogger.Logf(level, format, args...)
+	defaultSugaredLogger.LogfDirect(level, format, args...)
 }
 
-func Log(level LogLevel, args ...interface{}) {
-	defaultLogger.Log(level, args...)
+func Log(level LogLevel, msg string, args ...interface{}) {
+	defaultLogger.LogDirect(level, msg, args...)
 }
 
-func Debug(args ...interface{}) {
-	defaultLogger.Log(LogLevelDebug, args...)
+func Debug(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelDebug, msg, args...)
 }
 
-func Info(args ...interface{}) {
-	defaultLogger.Log(LogLevelInfo, args...)
+func Info(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelInfo, msg, args...)
 }
 
-func Warn(args ...interface{}) {
-	defaultLogger.Log(LogLevelWarn, args...)
+func Warn(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelWarn, msg, args...)
 }
 
-func Error(args ...interface{}) {
-	defaultLogger.Log(LogLevelError, args...)
+func Error(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelError, msg, args...)
 }
 
-func Fatal(args ...interface{}) {
-	defaultLogger.Log(LogLevelFatal, args...)
+func Fatal(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelFatal, msg, args...)
 }
 
 func Debugf(format string, args ...interface{}) {
-	defaultLogger.Logf(LogLevelDebug, format, args...)
+	defaultSugaredLogger.LogfDirect(LogLevelDebug, format, args...)
 }
 
 func Infof(format string, args ...interface{}) {
-	defaultLogger.Logf(LogLevelInfo, format, args...)
+	defaultSugaredLogger.LogfDirect(LogLevelInfo, format, args...)
 }
 
 func Warnf(format string, args ...interface{}) {
-	defaultLogger.Logf(LogLevelWarn, format, args...)
+	defaultSugaredLogger.LogfDirect(LogLevelWarn, format, args...)
 }
 
 func Errorf(format string, args ...interface{}) {
-	defaultLogger.Logf(LogLevelError, format, args...)
+	defaultSugaredLogger.LogfDirect(LogLevelError, format, args...)
 }
 
 func Fatalf(format string, args ...interface{}) {
-	defaultLogger.Logf(LogLevelFatal, format, args...)
+	defaultSugaredLogger.LogfDirect(LogLevelFatal, format, args...)
 }

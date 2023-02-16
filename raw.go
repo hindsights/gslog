@@ -14,7 +14,7 @@ type rawBackend struct {
 }
 
 func (backend *rawBackend) GetLogger(name string) Logger {
-	return NewFieldLogger(backend.GetSugaredLogger(name))
+	return NewAttrLogger(backend.GetSugaredLogger(name))
 }
 
 func (backend *rawBackend) GetSugaredLogger(name string) SugaredLogger {
@@ -50,6 +50,10 @@ func (logger rawLogger) prepareArgs(level LogLevel, format string, args ...inter
 }
 
 func (logger rawLogger) Logf(level LogLevel, format string, args ...interface{}) {
+	logger.LogfDirect(level, format, args...)
+}
+
+func (logger rawLogger) LogfDirect(level LogLevel, format string, args ...interface{}) {
 	if !logger.NeedLog(level) {
 		return
 	}
@@ -58,6 +62,10 @@ func (logger rawLogger) Logf(level LogLevel, format string, args ...interface{})
 }
 
 func (logger rawLogger) Log(level LogLevel, args ...interface{}) {
+	logger.LogDirect(level, args...)
+}
+
+func (logger rawLogger) LogDirect(level LogLevel, args ...interface{}) {
 	if !logger.NeedLog(level) {
 		return
 	}
@@ -66,41 +74,41 @@ func (logger rawLogger) Log(level LogLevel, args ...interface{}) {
 }
 
 func (logger rawLogger) Debug(args ...interface{}) {
-	logger.Log(LogLevelDebug, args...)
+	logger.LogDirect(LogLevelDebug, args...)
 }
 
 func (logger rawLogger) Info(args ...interface{}) {
-	logger.Log(LogLevelInfo, args...)
+	logger.LogDirect(LogLevelInfo, args...)
 }
 
 func (logger rawLogger) Warn(args ...interface{}) {
-	logger.Log(LogLevelWarn, args...)
+	logger.LogDirect(LogLevelWarn, args...)
 }
 
 func (logger rawLogger) Error(args ...interface{}) {
-	logger.Log(LogLevelError, args...)
+	logger.LogDirect(LogLevelError, args...)
 }
 
 func (logger rawLogger) Fatal(args ...interface{}) {
-	logger.Log(LogLevelFatal, args...)
+	logger.LogDirect(LogLevelFatal, args...)
 }
 
 func (logger rawLogger) Debugf(format string, args ...interface{}) {
-	logger.Logf(LogLevelDebug, format, args...)
+	logger.LogfDirect(LogLevelDebug, format, args...)
 }
 
 func (logger rawLogger) Infof(format string, args ...interface{}) {
-	logger.Logf(LogLevelInfo, format, args...)
+	logger.LogfDirect(LogLevelInfo, format, args...)
 }
 
 func (logger rawLogger) Warnf(format string, args ...interface{}) {
-	logger.Logf(LogLevelWarn, format, args...)
+	logger.LogfDirect(LogLevelWarn, format, args...)
 }
 
 func (logger rawLogger) Errorf(format string, args ...interface{}) {
-	logger.Logf(LogLevelError, format, args...)
+	logger.LogfDirect(LogLevelError, format, args...)
 }
 
 func (logger rawLogger) Fatalf(format string, args ...interface{}) {
-	logger.Logf(LogLevelFatal, format, args...)
+	logger.LogfDirect(LogLevelFatal, format, args...)
 }
