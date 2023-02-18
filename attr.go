@@ -5,7 +5,40 @@ import (
 	"time"
 )
 
+const (
+	ErrorKey      = "err"
+	LoggerNameKey = "ctx"
+)
+
 const badKey = "<badkey>"
+
+func Any(key string, val interface{}) Attr {
+	return makeAttr(key, val)
+}
+
+func String(key string, val string) Attr {
+	return Any(key, val)
+}
+
+func Int(key string, val int) Attr {
+	return Any(key, val)
+}
+
+func Int64(key string, val int64) Attr {
+	return Any(key, val)
+}
+
+func Uint64(key string, val uint64) Attr {
+	return Any(key, val)
+}
+
+func Int32(key string, val int32) Attr {
+	return Any(key, val)
+}
+
+func Uint32(key string, val uint32) Attr {
+	return Any(key, val)
+}
 
 func MakeAttr(key string, val interface{}) Attr {
 	return makeAttr(key, val)
@@ -143,6 +176,10 @@ func (logger rawAttrLogger) withAttr(key string, val interface{}) Logger {
 
 func (logger rawAttrLogger) WithAttrs(attrs ...Attr) Logger {
 	return rawAttrLogger{logger: logger.logger, attrs: JoinAttrs(logger.attrs, attrs)}
+}
+
+func (logger rawAttrLogger) With(args ...interface{}) Logger {
+	return rawAttrLogger{logger: logger.logger, attrs: JoinAttrs(logger.attrs, ToAttrs(args))}
 }
 
 func (logger rawAttrLogger) Str(key string, val string) Logger {

@@ -43,6 +43,7 @@ type Logger interface {
 	Fields(fields Fields) Logger
 	Field(key string, val interface{}) Logger
 	WithAttrs(attrs ...Attr) Logger
+	With(args ...interface{}) Logger
 
 	Str(key string, val string) Logger
 	Int(key string, val int) Logger
