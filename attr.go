@@ -20,6 +20,10 @@ func String(key string, val string) Attr {
 	return Any(key, val)
 }
 
+func Bool(key string, val bool) Attr {
+	return Any(key, val)
+}
+
 func Int(key string, val int) Attr {
 	return Any(key, val)
 }
