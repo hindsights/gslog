@@ -58,7 +58,7 @@ func extractAttr(args []interface{}) (Attr, []interface{}) {
 		if len(args) >= 2 {
 			return makeAttr(x, args[1]), args[2:]
 		}
-		return makeAttr(x, args[1]), nil
+		return makeAttr(badKey, x), nil
 	case Attr:
 		return x, args[1:]
 	default:
