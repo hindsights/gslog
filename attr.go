@@ -160,6 +160,7 @@ func (logger rawAttrLogger) Error(msg string, args ...interface{}) {
 
 func (logger rawAttrLogger) Fatal(msg string, args ...interface{}) {
 	logger.LogDirect(LogLevelFatal, msg, args...)
+	panic(append([]interface{}{msg}, args...))
 }
 
 func (logger rawAttrLogger) Fields(fields Fields) Logger {

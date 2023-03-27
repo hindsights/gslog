@@ -1,5 +1,7 @@
 package gslog
 
+import "fmt"
+
 var theBackend Backend
 var defaultLogger Logger
 var defaultSugaredLogger SugaredLogger
@@ -49,6 +51,7 @@ func Error(args ...interface{}) {
 
 func Fatal(args ...interface{}) {
 	defaultSugaredLogger.LogDirect(LogLevelFatal, args...)
+	panic(args)
 }
 
 func Debugf(format string, args ...interface{}) {
@@ -69,4 +72,5 @@ func Errorf(format string, args ...interface{}) {
 
 func Fatalf(format string, args ...interface{}) {
 	defaultSugaredLogger.LogfDirect(LogLevelFatal, format, args...)
+	panic(fmt.Sprintf(format, args...))
 }

@@ -91,6 +91,7 @@ func (logger rawLogger) Error(args ...interface{}) {
 
 func (logger rawLogger) Fatal(args ...interface{}) {
 	logger.LogDirect(LogLevelFatal, args...)
+	panic(args)
 }
 
 func (logger rawLogger) Debugf(format string, args ...interface{}) {
@@ -111,4 +112,5 @@ func (logger rawLogger) Errorf(format string, args ...interface{}) {
 
 func (logger rawLogger) Fatalf(format string, args ...interface{}) {
 	logger.LogfDirect(LogLevelFatal, format, args...)
+	panic(fmt.Sprintf(format, args...))
 }
