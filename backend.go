@@ -29,28 +29,28 @@ func Logf(level LogLevel, format string, args ...interface{}) {
 	defaultSugaredLogger.LogfDirect(level, format, args...)
 }
 
-func Log(level LogLevel, args ...interface{}) {
-	defaultLogger.LogDirect(level, args...)
+func Log(level LogLevel, msg string, args ...interface{}) {
+	defaultLogger.LogDirect(level, msg, args...)
 }
 
-func Debug(args ...interface{}) {
-	defaultLogger.LogDirect(LogLevelDebug, args...)
+func Debug(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelDebug, msg, args...)
 }
 
-func Info(args ...interface{}) {
-	defaultLogger.LogDirect(LogLevelInfo, args...)
+func Info(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelInfo, msg, args...)
 }
 
-func Warn(args ...interface{}) {
-	defaultLogger.LogDirect(LogLevelWarn, args...)
+func Warn(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelWarn, msg, args...)
 }
 
-func Error(args ...interface{}) {
-	defaultLogger.LogDirect(LogLevelError, args...)
+func Error(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelError, msg, args...)
 }
 
-func Fatal(args ...interface{}) {
-	defaultLogger.LogDirect(LogLevelFatal, args...)
+func Fatal(msg string, args ...interface{}) {
+	defaultLogger.LogDirect(LogLevelFatal, msg, args...)
 	panic(args)
 }
 
