@@ -30,27 +30,27 @@ func Logf(level LogLevel, format string, args ...interface{}) {
 }
 
 func Log(level LogLevel, args ...interface{}) {
-	defaultSugaredLogger.LogDirect(level, args...)
+	defaultLogger.LogDirect(level, args...)
 }
 
 func Debug(args ...interface{}) {
-	defaultSugaredLogger.LogDirect(LogLevelDebug, args...)
+	defaultLogger.LogDirect(LogLevelDebug, args...)
 }
 
 func Info(args ...interface{}) {
-	defaultSugaredLogger.LogDirect(LogLevelInfo, args...)
+	defaultLogger.LogDirect(LogLevelInfo, args...)
 }
 
 func Warn(args ...interface{}) {
-	defaultSugaredLogger.LogDirect(LogLevelWarn, args...)
+	defaultLogger.LogDirect(LogLevelWarn, args...)
 }
 
 func Error(args ...interface{}) {
-	defaultSugaredLogger.LogDirect(LogLevelError, args...)
+	defaultLogger.LogDirect(LogLevelError, args...)
 }
 
 func Fatal(args ...interface{}) {
-	defaultSugaredLogger.LogDirect(LogLevelFatal, args...)
+	defaultLogger.LogDirect(LogLevelFatal, args...)
 	panic(args)
 }
 
