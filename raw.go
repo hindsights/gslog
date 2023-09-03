@@ -3,6 +3,7 @@ package gslog
 import (
 	"fmt"
 	"log"
+	"os"
 )
 
 func init() {
@@ -10,6 +11,7 @@ func init() {
 }
 
 type rawBackend struct {
+	logger   *log.Logger
 	logLevel LogLevel
 }
 
@@ -22,7 +24,8 @@ func (backend *rawBackend) GetSugaredLogger(name string) SugaredLogger {
 }
 
 func NewRawBackend(logLevel LogLevel) Backend {
-	return &rawBackend{logLevel: logLevel}
+	logger := log.New(os.Stderr, "", log.Ldate|log.Lmicroseconds)
+	return &rawBackend{logLevel: logLevel, logger: logger}
 }
 
 type rawLogger struct {
@@ -58,7 +61,7 @@ func (logger rawLogger) LogfDirect(level LogLevel, format string, args ...interf
 		return
 	}
 	newFormat, vars := logger.prepareArgs(level, format, args...)
-	log.Printf(newFormat+"\n", vars...)
+	logger.backend.logger.Printf(newFormat+"\n", vars...)
 }
 
 func (logger rawLogger) Log(level LogLevel, args ...interface{}) {
@@ -70,7 +73,7 @@ func (logger rawLogger) LogDirect(level LogLevel, args ...interface{}) {
 		return
 	}
 	_, vars := logger.prepareArgs(level, "", args...)
-	log.Println(vars...)
+	logger.backend.logger.Println(vars...)
 }
 
 func (logger rawLogger) Debug(args ...interface{}) {

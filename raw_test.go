@@ -1,8 +1,10 @@
 package gslog
 
 import (
+	"errors"
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestLog(t *testing.T) {
@@ -22,4 +24,9 @@ func TestLog(t *testing.T) {
 	args := []interface{}{"abc", 1, "def", "xxx"}
 	attrs := ToAttrs(args)
 	fmt.Println("attrs", attrs)
+	Warn("test", errors.New("testerr"))
+	Warn("test", 123)
+	Warn("test", "val")
+	Warn("test", true)
+	Warn("test", time.Minute)
 }

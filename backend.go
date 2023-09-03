@@ -11,6 +11,10 @@ type Backend interface {
 	GetSugaredLogger(name string) SugaredLogger
 }
 
+func NewLogger() Logger {
+	return theBackend.GetLogger("")
+}
+
 func GetLogger(name string) Logger {
 	return theBackend.GetLogger(name)
 }
